@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -25,7 +26,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'User created successfuly'
-        ], 201);
+        ], Response::HTTP_CREATED);
     }
 
     public function login(Request $request)
@@ -36,7 +37,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only(['email', 'password']))) {
-            return response()->json(Auth::user(), 200);
+            return response()->json(Auth::user(), Response::HTTP_OK);
         }
 
         throw ValidationException::withMessages([
@@ -46,7 +47,7 @@ class AuthController extends Controller
 
     public function user()
     {
-        return response()->json(Auth::user(), 200);
+        return response()->json(Auth::user(), Response::HTTP_OK);
     }
 
     public function logout()
@@ -54,6 +55,6 @@ class AuthController extends Controller
         Auth::logout();
         return response()->json([
             'message' => 'logged out successfuly'
-        ], 200);
+        ], Response::HTTP_OK);
     }
 }
