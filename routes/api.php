@@ -20,4 +20,9 @@ Route::group(['namespace' => 'API\V01', 'prefix' => 'v1'], function () {
       Route::delete('/delete', 'ChannelController@deleteChannel')->name('channel.delete');
    });
 
+   // Channel Routes
+   Route::group(['namespace' => 'Thread','prefix' => 'channel'], function () {
+      Route::apiResource('/threads', 'ThreadController');
+   });
+
 });

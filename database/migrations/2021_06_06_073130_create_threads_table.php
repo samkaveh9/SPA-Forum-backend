@@ -17,7 +17,7 @@ class CreateThreadsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug');
-            $table->text('context');
+            $table->text('content');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('channel_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('best_answer_id')->nullable();
