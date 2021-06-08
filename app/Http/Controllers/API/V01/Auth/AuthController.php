@@ -22,8 +22,12 @@ class AuthController extends Controller
             'password' => ['required']
         ]);
 
-        resolve(UserRepository::class)->create($request);
-
+        $user = resolve(UserRepository::class)->create($request);
+        
+        $defaultSuperAdminEmail = config('permission.default_super_admin_email');
+        
+        $user->email == $defaultSuperAdminEmail ? $user->assignRole('super admin') : $user->assignRole('user');
+        
         return response()->json([
             'message' => 'User created successfuly'
         ], Response::HTTP_CREATED);

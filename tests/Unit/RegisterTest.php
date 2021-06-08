@@ -5,12 +5,34 @@ namespace Tests\Unit;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegisterTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
+
+    public function registerRolePermission()
+    {
+        $roleInDatabase = Role::where('name', config('permission.default_roles')[0]);
+        if ($roleInDatabase->count() < 1) {
+            foreach (config('permission.default_roles') as $role) {
+                Role::create([
+                    'name' => $role
+                ]);
+            }
+        }
+        $permissionInDatabase = Permission::where('name', config('permission.default_permissions')[0]);
+        if ($permissionInDatabase->count() < 1) {
+            foreach (config('permission.default_permissions') as $permission) {
+                Permission::create([
+                    'name' => $permission
+                ]);
+            }
+        } 
+    }
 
     public function test_register_should_be_validated()
     {
@@ -20,6 +42,7 @@ class RegisterTest extends TestCase
 
     public function test_new_user_can_be_registerd()
     {
+        $this->registerRolePermission();
         $response = $this->postJson(route('auth.register'), [
             'name' => $this->faker()->name,
             'email' => $this->faker()->safeEmail,
