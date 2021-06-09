@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 
-Route::group(['namespace' => 'API\V01', 'prefix' => 'v1'], function () {
+Route::group(['namespace' => 'API'], function () {
    // Authentication Routes
    Route::group(['namespace' => 'Auth','prefix' => 'auth'], function () {
       Route::post('/register', 'AuthController@register')->name('auth.register');
@@ -20,9 +20,14 @@ Route::group(['namespace' => 'API\V01', 'prefix' => 'v1'], function () {
       Route::delete('/delete', 'ChannelController@deleteChannel')->name('channel.delete');
    });
 
-   // Channel Routes
+   // Thread Routes
    Route::group(['namespace' => 'Thread','prefix' => 'channel'], function () {
       Route::apiResource('/threads', 'ThreadController');
+   });
+
+   // Answer Routes
+   Route::group(['namespace' => 'Thread','prefix' => 'answer'], function () {
+      Route::apiResource('/answers', 'AnswerController');
    });
 
 });

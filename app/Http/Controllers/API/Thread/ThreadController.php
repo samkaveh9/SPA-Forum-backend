@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V01\Thread;
+namespace App\Http\Controllers\API\Thread;
 
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\ThreadRepository;
@@ -76,7 +76,7 @@ class ThreadController extends Controller
                 'channel_id' => 'required'
             ]);
 
-        if (Gate::forUser(auth()->user())->allows('user_thread',$thread)) {
+        if (Gate::forUser(auth()->user())->allows('user-thread',$thread)) {
             resolve(ThreadRepository::class)->update($request, $thread);
             return response()->json([
                 'message' => 'thread updated successfuly'
@@ -96,7 +96,7 @@ class ThreadController extends Controller
      */
     public function destroy(Thread $thread)
     {
-        if (Gate::forUser(auth()->user())->allows('user_thread', $thread)) {
+        if (Gate::forUser(auth()->user())->allows('user-thread', $thread)) {
             resolve(ThreadRepository::class)->destroy($thread);
             return response()->json([
                 'message' => 'thread deleted successfuly'

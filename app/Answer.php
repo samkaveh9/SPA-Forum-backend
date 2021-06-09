@@ -8,7 +8,8 @@ use App\Thread;
 
 class Answer extends Model
 {
-    
+    protected $fillable = ['content','thread_id','user_id'];
+
     public function user(){
         return $this->belongsTo(User::class);   
     }
