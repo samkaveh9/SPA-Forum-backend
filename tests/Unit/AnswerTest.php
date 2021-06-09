@@ -23,6 +23,7 @@ class AnswerTest extends TestCase
 
     public function test_send_answer_should_be_validated()
     {
+        Sanctum::actingAs(factory(User::class)->create());
         $response = $this->postJson(route('answers.store'),[]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
@@ -38,8 +39,23 @@ class AnswerTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
+    public function test_user_score_will_increase_by_submit_new_answer()
+    {
+        $user = factory(User::class)->create();
+        Sanctum::actingAs($user);
+        $thread = factory(Thread::class)->create();
+        $response = $this->postJson(route('answers.store'),[
+            'content' => $this->faker()->sentence,
+            'thread_id' => $thread->id
+        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $user->refresh();
+        $this->assertEquals(10, $user->score);
+    }
+
     public function test_update_answer_should_be_validated()
     {
+        Sanctum::actingAs(factory(User::class)->create());
         $answer = factory(Answer::class)->create();
         $response = $this->putJson(route('answers.update',[$answer]),[]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);

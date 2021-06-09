@@ -11,6 +11,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ThreadController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('isUserBlock')->except([
+            'index',
+            'show'
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *

@@ -12,6 +12,11 @@ Route::group(['namespace' => 'API'], function () {
       Route::post('/logout', 'AuthController@logout')->name('auth.logout');
    });
 
+    // User Routes
+    Route::group(['namespace' => 'User','prefix' => 'users'], function () {
+      Route::get('/leaderborads', 'UserController@leaderborads')->name('users.leaderborads');
+   });
+
    // Channel Routes
    Route::group(['namespace' => 'Channel','prefix' => 'channel'], function () {
       Route::get('/all', 'ChannelController@getAllChannelsList')->name('channel.all');
@@ -21,13 +26,19 @@ Route::group(['namespace' => 'API'], function () {
    });
 
    // Thread Routes
-   Route::group(['namespace' => 'Thread','prefix' => 'channel'], function () {
+   Route::group(['namespace' => 'Thread','prefix' => 'thread'], function () {
       Route::apiResource('/threads', 'ThreadController');
    });
 
    // Answer Routes
    Route::group(['namespace' => 'Thread','prefix' => 'answer'], function () {
       Route::apiResource('/answers', 'AnswerController');
+   });
+
+    // Subscribe Routes
+    Route::group(['namespace' => 'Subscribe','prefix' => 'subscribe'], function () {
+      Route::post('/{thread}/subscribe', 'SubscribeController@subscribe')->name('subscribe');
+      Route::post('/{thread}/unsubscribe', 'SubscribeController@unSubscribe')->name('unsubscribe');
    });
 
 });

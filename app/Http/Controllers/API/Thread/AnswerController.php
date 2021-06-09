@@ -5,13 +5,27 @@ namespace App\Http\Controllers\API\Thread;
 use App\Answer;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\AnswerRepository;
+use App\Http\Repositories\SubscribeRepository;
+use App\Http\Repositories\UserRepository;
+use App\Notifications\NewReplaySubmitted;
+use App\Subscribe;
 use App\Thread;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Response;
 
 class AnswerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('isUserBlock')->except([
+            'index'
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -37,6 +51,14 @@ class AnswerController extends Controller
         ]);
 
         resolve(AnswerRepository::class)->store($request);
+
+        $notifiable_users_id = resolve(SubscribeRepository::class)->getNotifiableUsers($request->thread_id);
+        $notifiable_users = resolve(UserRepository::class)->find($notifiable_users_id); 
+        Notification::send($notifiable_users, new NewReplaySubmitted(Thread::find($request->thread_id)));   
+
+       if (Thread::find($request->input('thread_id'))->user_id !== auth()->id()) {
+            auth()->user()->increment('score', 10);
+       }
 
         return response()->json([
             'message' => 'answer submitted successfuly'
